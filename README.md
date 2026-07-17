@@ -1,5 +1,7 @@
 # Woodworking Tool Inventory
 
+**Live site: https://ascotttoney.github.io/claude-rails-angular/**
+
 A small Angular app for cataloging woodworking tools. It runs entirely in the
 browser — tools are stored in `localStorage` — so it can be hosted for free as
 a static site on GitHub Pages, with no server or database to run.
