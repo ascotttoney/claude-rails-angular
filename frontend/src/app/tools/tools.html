@@ -1,0 +1,97 @@
+<section class="tools">
+  <header class="tools__header">
+    <h1>🪚 Woodworking Tool Inventory</h1>
+    <p class="tools__count">{{ tools().length }} {{ tools().length === 1 ? 'tool' : 'tools' }}</p>
+  </header>
+
+  @if (errors().length) {
+    <div class="alert" role="alert">
+      <ul>
+        @for (error of errors(); track error) {
+          <li>{{ error }}</li>
+        }
+      </ul>
+    </div>
+  }
+
+  <form class="tool-form" (ngSubmit)="save()">
+    <h2>{{ editingId() === null ? 'Add a tool' : 'Edit tool' }}</h2>
+    <div class="tool-form__grid">
+      <label>
+        Name
+        <input name="name" [(ngModel)]="form().name" required placeholder="e.g. Table saw" />
+      </label>
+      <label>
+        Category
+        <select name="category" [(ngModel)]="form().category">
+          <option value="">—</option>
+          @for (category of categories; track category) {
+            <option [value]="category">{{ category }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Brand
+        <input name="brand" [(ngModel)]="form().brand" placeholder="e.g. DeWalt" />
+      </label>
+      <label>
+        Model
+        <input name="model" [(ngModel)]="form().model" placeholder="e.g. DWE7491RS" />
+      </label>
+      <label>
+        Quantity
+        <input name="quantity" type="number" min="0" [(ngModel)]="form().quantity" required />
+      </label>
+      <label>
+        Location
+        <input name="location" [(ngModel)]="form().location" placeholder="e.g. Shop" />
+      </label>
+    </div>
+    <div class="tool-form__actions">
+      <button type="submit" class="btn btn--primary">
+        {{ editingId() === null ? 'Add tool' : 'Save changes' }}
+      </button>
+      @if (editingId() !== null) {
+        <button type="button" class="btn" (click)="cancelEdit()">Cancel</button>
+      }
+    </div>
+  </form>
+
+  @if (loading()) {
+    <p class="tools__empty">Loading…</p>
+  } @else if (tools().length === 0) {
+    <p class="tools__empty">No tools yet. Add your first one above.</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="tool-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Model</th>
+            <th class="num">Qty</th>
+            <th>Location</th>
+            <th class="actions-col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (tool of tools(); track tool.id) {
+            <tr [class.editing]="tool.id === editingId()">
+              <td data-label="Name">{{ tool.name }}</td>
+              <td data-label="Category">{{ tool.category || '—' }}</td>
+              <td data-label="Brand">{{ tool.brand || '—' }}</td>
+              <td data-label="Model">{{ tool.model || '—' }}</td>
+              <td data-label="Qty" class="num">{{ tool.quantity }}</td>
+              <td data-label="Location">{{ tool.location || '—' }}</td>
+              <td class="actions-col">
+                <button type="button" class="link" (click)="edit(tool)">Edit</button>
+                <button type="button" class="link link--danger" (click)="remove(tool)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

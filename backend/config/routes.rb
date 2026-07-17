@@ -8,6 +8,11 @@ Rails.application.routes.draw do
   # Hello world API endpoint consumed by the Angular frontend.
   get "api/hello" => "hello#index"
 
+  # Woodworking tool inventory API consumed by the Angular frontend.
+  scope :api do
+    resources :tools, except: %i[new edit]
+  end
+
   # Defines the root path route ("/")
   # root "posts#index"
 end

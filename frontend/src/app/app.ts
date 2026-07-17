@@ -1,26 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
 
-interface HelloResponse {
-  message: string;
-}
+import { Tools } from './tools/tools';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [Tools],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  private readonly http = inject(HttpClient);
-
-  protected readonly message = signal('Loading…');
-
-  constructor() {
-    this.http.get<HelloResponse>('http://localhost:3000/api/hello').subscribe({
-      next: (res) => this.message.set(res.message),
-      error: () => this.message.set('Could not reach the Rails backend.')
-    });
-  }
-}
+export class App {}
