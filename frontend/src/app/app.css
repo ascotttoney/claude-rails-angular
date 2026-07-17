@@ -1,0 +1,23 @@
+.container {
+  max-width: 640px;
+  margin: 4rem auto;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+.message {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #c52f24; /* Rails red */
+}
+
+small {
+  display: block;
+  margin-top: 1rem;
+  color: #666;
+}
