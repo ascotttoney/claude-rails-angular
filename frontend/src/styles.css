@@ -1,1 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+
+/* Instrument Serif is a single-weight (400) display serif, backed by a
+   serif system-font fallback stack. */
+@theme {
+  --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+}
+
+/* Nudge the root size up so every rem-based Tailwind text utility scales up
+   together (16px -> 20px). */
+html {
+  font-size: 125%;
+}
+
+body {
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}

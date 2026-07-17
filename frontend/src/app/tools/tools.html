@@ -1,12 +1,14 @@
-<section class="tools">
-  <header class="tools__header">
-    <h1>🪚 Woodworking Tool Inventory</h1>
-    <p class="tools__count">{{ tools().length }} {{ tools().length === 1 ? 'tool' : 'tools' }}</p>
+<section class="mx-auto max-w-4xl px-6 py-10 font-serif text-stone-800">
+  <header class="mb-6 flex flex-wrap items-baseline justify-between gap-3">
+    <h1 class="text-2xl font-bold tracking-tight">🪚 Woodworking Tool Inventory</h1>
+    <p class="font-semibold text-stone-500">
+      {{ tools().length }} {{ tools().length === 1 ? 'tool' : 'tools' }}
+    </p>
   </header>
 
   @if (errors().length) {
-    <div class="alert" role="alert">
-      <ul>
+    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800" role="alert">
+      <ul class="list-disc pl-5">
         @for (error of errors(); track error) {
           <li>{{ error }}</li>
         }
@@ -14,79 +16,94 @@
     </div>
   }
 
-  <form class="tool-form" (ngSubmit)="save()">
-    <h2>{{ editingId() === null ? 'Add a tool' : 'Edit tool' }}</h2>
-    <div class="tool-form__grid">
-      <label>
+  <form class="mb-8 rounded-xl border border-stone-200 bg-stone-50 p-6" (ngSubmit)="save()">
+    <h2 class="mb-4 text-lg font-semibold">
+      {{ editingId() === null ? 'Add a tool' : 'Edit tool' }}
+    </h2>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <label class="flex flex-col gap-1.5 text-sm font-semibold text-stone-700">
         Name
-        <input name="name" [(ngModel)]="form().name" required placeholder="e.g. Table saw" />
+        <input name="name" [(ngModel)]="form().name" required placeholder="e.g. Table saw"
+          class="rounded-md border border-stone-300 bg-white px-3 py-2 font-normal text-stone-800 shadow-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-600/40 focus:outline-none" />
       </label>
-      <label>
+      <label class="flex flex-col gap-1.5 text-sm font-semibold text-stone-700">
         Category
-        <select name="category" [(ngModel)]="form().category">
+        <select name="category" [(ngModel)]="form().category"
+          class="rounded-md border border-stone-300 bg-white px-3 py-2 font-normal text-stone-800 shadow-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-600/40 focus:outline-none">
           <option value="">—</option>
           @for (category of categories; track category) {
             <option [value]="category">{{ category }}</option>
           }
         </select>
       </label>
-      <label>
+      <label class="flex flex-col gap-1.5 text-sm font-semibold text-stone-700">
         Brand
-        <input name="brand" [(ngModel)]="form().brand" placeholder="e.g. DeWalt" />
+        <input name="brand" [(ngModel)]="form().brand" placeholder="e.g. DeWalt"
+          class="rounded-md border border-stone-300 bg-white px-3 py-2 font-normal text-stone-800 shadow-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-600/40 focus:outline-none" />
       </label>
-      <label>
+      <label class="flex flex-col gap-1.5 text-sm font-semibold text-stone-700">
         Model
-        <input name="model" [(ngModel)]="form().model" placeholder="e.g. DWE7491RS" />
+        <input name="model" [(ngModel)]="form().model" placeholder="e.g. DWE7491RS"
+          class="rounded-md border border-stone-300 bg-white px-3 py-2 font-normal text-stone-800 shadow-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-600/40 focus:outline-none" />
       </label>
-      <label>
+      <label class="flex flex-col gap-1.5 text-sm font-semibold text-stone-700">
         Quantity
-        <input name="quantity" type="number" min="0" [(ngModel)]="form().quantity" required />
+        <input name="quantity" type="number" min="0" [(ngModel)]="form().quantity" required
+          class="rounded-md border border-stone-300 bg-white px-3 py-2 font-normal text-stone-800 shadow-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-600/40 focus:outline-none" />
       </label>
-      <label>
+      <label class="flex flex-col gap-1.5 text-sm font-semibold text-stone-700">
         Location
-        <input name="location" [(ngModel)]="form().location" placeholder="e.g. Shop" />
+        <input name="location" [(ngModel)]="form().location" placeholder="e.g. Shop"
+          class="rounded-md border border-stone-300 bg-white px-3 py-2 font-normal text-stone-800 shadow-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-600/40 focus:outline-none" />
       </label>
     </div>
-    <div class="tool-form__actions">
-      <button type="submit" class="btn btn--primary">
+    <div class="mt-5 flex gap-3">
+      <button type="submit"
+        class="rounded-md bg-amber-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-amber-800 focus:ring-2 focus:ring-amber-600/40 focus:outline-none">
         {{ editingId() === null ? 'Add tool' : 'Save changes' }}
       </button>
       @if (editingId() !== null) {
-        <button type="button" class="btn" (click)="cancelEdit()">Cancel</button>
+        <button type="button" (click)="cancelEdit()"
+          class="rounded-md border border-stone-300 bg-white px-4 py-2 font-semibold text-stone-700 shadow-sm transition hover:bg-stone-100">
+          Cancel
+        </button>
       }
     </div>
   </form>
 
   @if (loading()) {
-    <p class="tools__empty">Loading…</p>
+    <p class="py-8 text-center text-stone-500">Loading…</p>
   } @else if (tools().length === 0) {
-    <p class="tools__empty">No tools yet. Add your first one above.</p>
+    <p class="py-8 text-center text-stone-500">No tools yet. Add your first one above.</p>
   } @else {
-    <div class="table-wrap">
-      <table class="tool-table">
+    <div class="overflow-x-auto rounded-xl border border-stone-200">
+      <table class="w-full border-collapse text-sm">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Brand</th>
-            <th>Model</th>
-            <th class="num">Qty</th>
-            <th>Location</th>
-            <th class="actions-col"></th>
+          <tr class="border-b border-stone-200 bg-stone-50 text-xs uppercase tracking-wider text-stone-500">
+            <th class="px-4 py-3 text-left font-semibold">Name</th>
+            <th class="px-4 py-3 text-left font-semibold">Category</th>
+            <th class="px-4 py-3 text-left font-semibold">Brand</th>
+            <th class="px-4 py-3 text-left font-semibold">Model</th>
+            <th class="px-4 py-3 text-right font-semibold">Qty</th>
+            <th class="px-4 py-3 text-left font-semibold">Location</th>
+            <th class="px-4 py-3"></th>
           </tr>
         </thead>
         <tbody>
           @for (tool of tools(); track tool.id) {
-            <tr [class.editing]="tool.id === editingId()">
-              <td data-label="Name">{{ tool.name }}</td>
-              <td data-label="Category">{{ tool.category || '—' }}</td>
-              <td data-label="Brand">{{ tool.brand || '—' }}</td>
-              <td data-label="Model">{{ tool.model || '—' }}</td>
-              <td data-label="Qty" class="num">{{ tool.quantity }}</td>
-              <td data-label="Location">{{ tool.location || '—' }}</td>
-              <td class="actions-col">
-                <button type="button" class="link" (click)="edit(tool)">Edit</button>
-                <button type="button" class="link link--danger" (click)="remove(tool)">Delete</button>
+            <tr class="border-b border-stone-100 last:border-b-0 hover:bg-stone-50"
+              [class.bg-amber-50]="tool.id === editingId()">
+              <td class="px-4 py-3 font-medium">{{ tool.name }}</td>
+              <td class="px-4 py-3 text-stone-600">{{ tool.category || '—' }}</td>
+              <td class="px-4 py-3 text-stone-600">{{ tool.brand || '—' }}</td>
+              <td class="px-4 py-3 text-stone-600">{{ tool.model || '—' }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">{{ tool.quantity }}</td>
+              <td class="px-4 py-3 text-stone-600">{{ tool.location || '—' }}</td>
+              <td class="whitespace-nowrap px-4 py-3 text-right">
+                <button type="button" (click)="edit(tool)"
+                  class="font-semibold text-amber-700 hover:underline">Edit</button>
+                <button type="button" (click)="remove(tool)"
+                  class="ml-3 font-semibold text-red-700 hover:underline">Delete</button>
               </td>
             </tr>
           }
