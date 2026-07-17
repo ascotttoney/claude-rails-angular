@@ -1,13 +1,13 @@
 # Woodworking Tool Inventory
 
-A small full-stack app for cataloging woodworking tools: a Rails 8 API backend
-backed by SQLite, and an Angular frontend for browsing, adding, editing, and
-deleting tools.
+A small Angular app for cataloging woodworking tools. It runs entirely in the
+browser — tools are stored in `localStorage` — so it can be hosted for free as
+a static site on GitHub Pages, with no server or database to run.
 
 ```
 .
-├── backend/    # Rails 8 API-only app (CRUD under /api/tools, SQLite)
-└── frontend/   # Angular app: tool table + add/edit/delete form
+├── frontend/   # Angular app: tool table + add/edit/delete, localStorage-backed
+└── backend/    # Legacy Rails API from earlier versions — no longer used (see below)
 ```
 
 Each tool records a **name, category, brand, model, quantity, and location**.
@@ -16,22 +16,9 @@ Finishing, Other.
 
 ## Prerequisites
 
-- Ruby 3.4+ and Bundler
 - Node 20+ and npm
-- Angular CLI (`npm install -g @angular/cli`)
 
-## Running
-
-Start the backend (port 3000):
-
-```bash
-cd backend
-bundle install
-bin/rails db:prepare    # creates and migrates the SQLite database
-bin/rails server
-```
-
-In a second terminal, start the frontend (port 4200):
+## Running locally
 
 ```bash
 cd frontend
@@ -42,32 +29,40 @@ npm start          # alias for `ng serve`
 Open http://localhost:4200 to manage your inventory. The list starts empty —
 add your first tool from the form at the top.
 
-## API
+## Data & storage
 
-All endpoints live under `/api` and accept/return JSON. Tool payloads are
-wrapped in a `tool` key, e.g. `{ "tool": { "name": "Table saw", ... } }`.
-
-| Method | Path              | Description              |
-| ------ | ----------------- | ------------------------ |
-| GET    | `/api/tools`      | List tools (ordered)     |
-| GET    | `/api/tools/:id`  | Show one tool            |
-| POST   | `/api/tools`      | Create a tool            |
-| PATCH  | `/api/tools/:id`  | Update a tool            |
-| DELETE | `/api/tools/:id`  | Delete a tool            |
-
-`name` is required and `quantity` must be a non-negative integer; validation
-errors come back as `{ "errors": [...] }` with a `422` status.
+- Tools live in your browser's `localStorage` under the key
+  `woodworking-tool-inventory`. Data is per-browser and per-device — it is not
+  synced anywhere.
+- Use **Export** (top right) to download the whole inventory as a JSON file for
+  backup or transfer, and **Import** to load one back. Import replaces the
+  current inventory.
 
 ## How it fits together
 
-- `backend/app/models/tool.rb` — `Tool` model, validations, and category list.
-- `backend/app/controllers/tools_controller.rb` — REST CRUD actions.
-- `backend/config/routes.rb` — maps `/api/tools` to the controller.
-- `backend/config/initializers/cors.rb` allows requests from the Angular dev
-  server (`http://localhost:4200`). Tighten `origins` before deploying.
-- `frontend/src/app/tool.service.ts` — `HttpClient` wrapper for the API.
+- `frontend/src/app/tool.service.ts` — CRUD over `localStorage`, plus
+  export/import. Validates that `name` is present and `quantity` is a
+  non-negative integer.
 - `frontend/src/app/tools/` — the inventory component (table + form), rendered
   by `frontend/src/app/app.ts`.
+- `frontend/src/styles.css` — Tailwind CSS v4 setup and the Instrument Serif
+  typography.
 
-A leftover `GET /api/hello` endpoint from the original scaffold still exists but
-is no longer used by the frontend.
+## Deploying to GitHub Pages
+
+Deployment is automated by `.github/workflows/deploy.yml`, which builds the
+Angular app and publishes it on every push to `main`.
+
+One-time setup: in the GitHub repo, go to **Settings → Pages** and set
+**Source** to **GitHub Actions**. After the next push, the site is served at
+`https://<your-username>.github.io/claude-rails-angular/`.
+
+The workflow builds with `--base-href /claude-rails-angular/` so assets resolve
+correctly under that subpath. If you rename the repository, update the
+base-href in the workflow to match.
+
+## About the legacy Rails backend
+
+Earlier versions of this app used a Rails 8 API (`backend/`) with SQLite. The
+app now stores data in the browser instead, so the backend is no longer used or
+required. Its files are kept in the repository for reference and can be removed.

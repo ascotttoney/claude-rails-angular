@@ -83,6 +83,39 @@ export class Tools implements OnInit {
     this.resetForm();
   }
 
+  /** Downloads the whole inventory as a JSON file. */
+  protected exportInventory(): void {
+    const data = JSON.stringify(this.toolService.exportAll(), null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `tool-inventory-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  /** Replaces the inventory with the contents of an uploaded JSON export. */
+  protected importInventory(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        this.toolService.replaceAll(JSON.parse(reader.result as string));
+        this.resetForm();
+        this.load();
+      } catch {
+        this.errors.set(['That file is not a valid inventory export.']);
+      }
+      input.value = '';
+    };
+    reader.readAsText(file);
+  }
+
   private resetForm(): void {
     this.editingId.set(null);
     this.form.set(emptyTool());
