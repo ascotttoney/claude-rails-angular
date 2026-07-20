@@ -1,19 +1,21 @@
 @import 'tailwindcss';
 
-/* Instrument Serif is a single-weight (400) display serif, backed by a
-   serif system-font fallback stack. */
+/* CallRail-inspired design tokens: a bright Picton-blue primary on a clean,
+   white/Aqua-Haze canvas with a modern sans-serif (Inter). */
 @theme {
-  --font-serif: 'Instrument Serif', 'Times New Roman', serif;
-}
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-/* Nudge the root size up so every rem-based Tailwind text utility scales up
-   together (16px -> 20px). */
-html {
-  font-size: 125%;
+  /* Brand palette */
+  --color-brand: #388aed; /* Picton Blue  — primary CTA/accent */
+  --color-brand-dark: #1755a0; /* Fun Blue     — hover/pressed */
+  --color-ink: #272b2f; /* Shark        — headings/body text */
+  --color-haze: #f7f9fa; /* Aqua Haze    — section backgrounds */
 }
 
 body {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background-color: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
