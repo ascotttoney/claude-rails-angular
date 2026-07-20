@@ -1,1 +1,1 @@
-/* Styling is handled with Tailwind utility classes in tools.html. */
+/* Styling lives in the global src/styles.css (semantic classes via @apply). */

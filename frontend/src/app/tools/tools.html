@@ -1,27 +1,25 @@
-<section class="mx-auto max-w-5xl px-6 py-12">
-  <header class="mb-8 flex flex-wrap items-center justify-between gap-3">
+<section class="page">
+  <header class="page-header">
     <div>
-      <h1 class="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Tool Inventory</h1>
-      <p class="mt-1 text-sm font-medium text-stone-500">
+      <h1 class="page-title">Tool Inventory</h1>
+      <p class="page-subtitle">
         {{ tools().length }} {{ tools().length === 1 ? 'tool' : 'tools' }} tracked
       </p>
     </div>
-    <div class="flex items-center gap-3">
-      <button type="button" (click)="exportInventory()"
-        class="rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm transition hover:border-stone-400 hover:bg-stone-50">
+    <div class="header-actions">
+      <button type="button" (click)="exportInventory()" class="btn-ghost">
         Export
       </button>
-      <label
-        class="cursor-pointer rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm transition hover:border-stone-400 hover:bg-stone-50">
+      <label class="btn-ghost">
         Import
-        <input type="file" accept="application/json" (change)="importInventory($event)" class="hidden" />
+        <input type="file" accept="application/json" (change)="importInventory($event)" class="field__file" />
       </label>
     </div>
   </header>
 
   @if (errors().length) {
-    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
-      <ul class="list-disc pl-5">
+    <div class="alert" role="alert">
+      <ul class="alert__list">
         @for (error of errors(); track error) {
           <li>{{ error }}</li>
         }
@@ -29,55 +27,47 @@
     </div>
   }
 
-  <form class="mb-10 rounded-2xl border border-stone-200 bg-haze p-6 shadow-sm sm:p-8" (ngSubmit)="save()">
-    <h2 class="mb-5 text-lg font-bold text-ink">
+  <form class="tool-form" (ngSubmit)="save()">
+    <h2 class="tool-form__title">
       {{ editingId() === null ? 'Add a tool' : 'Edit tool' }}
     </h2>
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      <label class="flex flex-col gap-1.5 text-sm font-semibold text-ink">
+    <div class="field-grid">
+      <label class="field">
         Name
-        <input name="name" [(ngModel)]="form().name" required placeholder="e.g. Table saw"
-          class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal text-ink shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/30 focus:outline-none" />
+        <input name="name" [(ngModel)]="form().name" required placeholder="e.g. Table saw" class="field__input" />
       </label>
-      <label class="flex flex-col gap-1.5 text-sm font-semibold text-ink">
+      <label class="field">
         Category
-        <select name="category" [(ngModel)]="form().category"
-          class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal text-ink shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/30 focus:outline-none">
+        <select name="category" [(ngModel)]="form().category" class="field__input">
           <option value="">—</option>
           @for (category of categories; track category) {
             <option [value]="category">{{ category }}</option>
           }
         </select>
       </label>
-      <label class="flex flex-col gap-1.5 text-sm font-semibold text-ink">
+      <label class="field">
         Brand
-        <input name="brand" [(ngModel)]="form().brand" placeholder="e.g. DeWalt"
-          class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal text-ink shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/30 focus:outline-none" />
+        <input name="brand" [(ngModel)]="form().brand" placeholder="e.g. DeWalt" class="field__input" />
       </label>
-      <label class="flex flex-col gap-1.5 text-sm font-semibold text-ink">
+      <label class="field">
         Model
-        <input name="model" [(ngModel)]="form().model" placeholder="e.g. DWE7491RS"
-          class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal text-ink shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/30 focus:outline-none" />
+        <input name="model" [(ngModel)]="form().model" placeholder="e.g. DWE7491RS" class="field__input" />
       </label>
-      <label class="flex flex-col gap-1.5 text-sm font-semibold text-ink">
+      <label class="field">
         Quantity
-        <input name="quantity" type="number" min="0" [(ngModel)]="form().quantity" required
-          class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal text-ink shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/30 focus:outline-none" />
+        <input name="quantity" type="number" min="0" [(ngModel)]="form().quantity" required class="field__input" />
       </label>
-      <label class="flex flex-col gap-1.5 text-sm font-semibold text-ink">
+      <label class="field">
         Location
-        <input name="location" [(ngModel)]="form().location" placeholder="e.g. Shop"
-          class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal text-ink shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/30 focus:outline-none" />
+        <input name="location" [(ngModel)]="form().location" placeholder="e.g. Shop" class="field__input" />
       </label>
     </div>
-    <div class="mt-6 flex gap-3">
-      <button type="submit"
-        class="rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-dark focus:ring-2 focus:ring-brand/30 focus:outline-none">
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">
         {{ editingId() === null ? 'Add tool' : 'Save changes' }}
       </button>
       @if (editingId() !== null) {
-        <button type="button" (click)="cancelEdit()"
-          class="rounded-full border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-sm transition hover:border-stone-400 hover:bg-stone-50">
+        <button type="button" (click)="cancelEdit()" class="btn-secondary">
           Cancel
         </button>
       }
@@ -85,38 +75,35 @@
   </form>
 
   @if (loading()) {
-    <p class="py-8 text-center text-stone-500">Loading…</p>
+    <p class="empty-state">Loading…</p>
   } @else if (tools().length === 0) {
-    <p class="py-8 text-center text-stone-500">No tools yet. Add your first one above.</p>
+    <p class="empty-state">No tools yet. Add your first one above.</p>
   } @else {
-    <div class="overflow-x-auto rounded-2xl border border-stone-200 shadow-sm">
-      <table class="w-full border-collapse text-sm">
+    <div class="table-wrap">
+      <table class="table">
         <thead>
-          <tr class="border-b border-stone-200 bg-haze text-xs font-semibold uppercase tracking-wider text-stone-500">
-            <th class="px-4 py-3.5 text-left">Name</th>
-            <th class="px-4 py-3.5 text-left">Category</th>
-            <th class="px-4 py-3.5 text-left">Brand</th>
-            <th class="px-4 py-3.5 text-left">Model</th>
-            <th class="px-4 py-3.5 text-right">Qty</th>
-            <th class="px-4 py-3.5 text-left">Location</th>
-            <th class="px-4 py-3.5"></th>
+          <tr>
+            <th class="col-head">Name</th>
+            <th class="col-head">Category</th>
+            <th class="col-head">Brand</th>
+            <th class="col-head">Model</th>
+            <th class="col-head--num">Qty</th>
+            <th class="col-head">Location</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           @for (tool of tools(); track tool.id) {
-            <tr class="border-b border-stone-100 last:border-b-0 hover:bg-haze"
-              [class.bg-blue-50]="tool.id === editingId()">
-              <td class="px-4 py-3.5 font-semibold text-ink">{{ tool.name }}</td>
-              <td class="px-4 py-3.5 text-stone-600">{{ tool.category || '—' }}</td>
-              <td class="px-4 py-3.5 text-stone-600">{{ tool.brand || '—' }}</td>
-              <td class="px-4 py-3.5 text-stone-600">{{ tool.model || '—' }}</td>
-              <td class="px-4 py-3.5 text-right tabular-nums text-ink">{{ tool.quantity }}</td>
-              <td class="px-4 py-3.5 text-stone-600">{{ tool.location || '—' }}</td>
-              <td class="whitespace-nowrap px-4 py-3.5 text-right">
-                <button type="button" (click)="edit(tool)"
-                  class="font-semibold text-brand hover:text-brand-dark hover:underline">Edit</button>
-                <button type="button" (click)="remove(tool)"
-                  class="ml-3 font-semibold text-red-600 hover:text-red-700 hover:underline">Delete</button>
+            <tr [class.is-editing]="tool.id === editingId()">
+              <td class="cell-name">{{ tool.name }}</td>
+              <td class="cell-muted">{{ tool.category || '—' }}</td>
+              <td class="cell-muted">{{ tool.brand || '—' }}</td>
+              <td class="cell-muted">{{ tool.model || '—' }}</td>
+              <td class="cell-num">{{ tool.quantity }}</td>
+              <td class="cell-muted">{{ tool.location || '—' }}</td>
+              <td class="cell-actions">
+                <button type="button" (click)="edit(tool)" class="link-edit">Edit</button>
+                <button type="button" (click)="remove(tool)" class="link-delete">Delete</button>
               </td>
             </tr>
           }
