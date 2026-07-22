@@ -61,6 +61,31 @@
         Location
         <input name="location" [(ngModel)]="form().location" placeholder="e.g. Shop" class="field__input" />
       </label>
+      <div class="field">
+        Photo
+        <div class="photo-field">
+          @if (form().image) {
+            <img [src]="form().image" alt="" class="photo-field__preview" />
+          } @else {
+            <span class="photo-field__placeholder" aria-hidden="true">No photo</span>
+          }
+          <div class="photo-field__actions">
+            <label class="btn-ghost">
+              {{ processingImage() ? 'Adding…' : form().image ? 'Replace' : 'Choose photo' }}
+              <input
+                type="file"
+                accept="image/*"
+                [disabled]="processingImage()"
+                (change)="pickImage($event)"
+                class="field__file"
+              />
+            </label>
+            @if (form().image) {
+              <button type="button" (click)="clearImage()" class="link-delete">Remove</button>
+            }
+          </div>
+        </div>
+      </div>
     </div>
     <div class="form-actions">
       <button type="submit" class="btn-primary">
@@ -83,6 +108,7 @@
       <table class="table">
         <thead>
           <tr>
+            <th class="col-head--photo"><span class="sr-only">Photo</span></th>
             <th class="col-head">Name</th>
             <th class="col-head">Category</th>
             <th class="col-head">Brand</th>
@@ -95,6 +121,20 @@
         <tbody>
           @for (tool of tools(); track tool.id) {
             <tr [class.is-editing]="tool.id === editingId()">
+              <td class="cell-photo">
+                @if (tool.image) {
+                  <button
+                    type="button"
+                    (click)="viewImage(tool)"
+                    class="thumb-button"
+                    [attr.aria-label]="'View photo of ' + tool.name"
+                  >
+                    <img [src]="tool.image" alt="" class="thumb" />
+                  </button>
+                } @else {
+                  <span class="thumb thumb--empty" aria-hidden="true"></span>
+                }
+              </td>
               <td class="cell-name">{{ tool.name }}</td>
               <td class="cell-muted">{{ tool.category || '—' }}</td>
               <td class="cell-muted">{{ tool.brand || '—' }}</td>
@@ -109,6 +149,24 @@
           }
         </tbody>
       </table>
+    </div>
+  }
+
+  @if (viewing(); as tool) {
+    <div
+      class="lightbox"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'Photo of ' + tool.name"
+      (click)="closeImage()"
+    >
+      <figure class="lightbox__figure" (click)="$event.stopPropagation()">
+        <img [src]="tool.image" [alt]="'Photo of ' + tool.name" class="lightbox__image" />
+        <figcaption class="lightbox__caption">
+          <span>{{ tool.name }}</span>
+          <button type="button" (click)="closeImage()" class="btn-secondary">Close</button>
+        </figcaption>
+      </figure>
     </div>
   }
 </section>

@@ -33,7 +33,11 @@ export class ToolService {
       updated_at: now
     };
     tools.push(created);
-    this.write(tools);
+    try {
+      this.write(tools);
+    } catch (err) {
+      return throwError(() => ({ error: { errors: [(err as Error).message] } }));
+    }
     return of(created);
   }
 
@@ -55,7 +59,11 @@ export class ToolService {
       updated_at: new Date().toISOString()
     };
     tools[index] = updated;
-    this.write(tools);
+    try {
+      this.write(tools);
+    } catch (err) {
+      return throwError(() => ({ error: { errors: [(err as Error).message] } }));
+    }
     return of(updated);
   }
 
@@ -86,8 +94,19 @@ export class ToolService {
     }
   }
 
+  /**
+   * Persists the inventory. Throws when localStorage is full, which tool
+   * photos make a realistic outcome even though they are stored as
+   * thumbnails — the per-origin budget is only a few megabytes.
+   */
   private write(tools: Tool[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
+    } catch {
+      throw new Error(
+        'Browser storage is full. Remove a photo from an existing tool, or export and trim your inventory.'
+      );
+    }
   }
 
   private ordered(tools: Tool[]): Tool[] {

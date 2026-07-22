@@ -12,9 +12,9 @@ a static site on GitHub Pages, with no server or database to run.
 └── backend/    # Legacy Rails API from earlier versions — no longer used (see below)
 ```
 
-Each tool records a **name, category, brand, model, quantity, and location**.
-Categories: Hand, Power, Clamps, Measuring, Sharpening, Safety, Fastening,
-Finishing, Other.
+Each tool records a **name, category, brand, model, quantity, location, and an
+optional photo**. Categories: Hand, Power, Clamps, Measuring, Sharpening,
+Safety, Fastening, Finishing, Other.
 
 ## Prerequisites
 
@@ -39,6 +39,10 @@ add your first tool from the form at the top.
 - Use **Export** (top right) to download the whole inventory as a JSON file for
   backup or transfer, and **Import** to load one back. Import replaces the
   current inventory.
+- Photos are stored inline with the tool as data URLs, so they travel with an
+  export. Because `localStorage` is capped at a few megabytes per browser, every
+  upload is downscaled to a 480px JPEG thumbnail before it is saved. If storage
+  does fill up, saving reports it and you can remove a photo to make room.
 
 ## How it fits together
 
@@ -47,6 +51,8 @@ add your first tool from the form at the top.
   non-negative integer.
 - `frontend/src/app/tools/` — the inventory component (table + form), rendered
   by `frontend/src/app/app.ts`.
+- `frontend/src/app/image.ts` — downscales and re-encodes uploaded photos to
+  keep them inside the `localStorage` budget.
 - `frontend/src/styles.css` — Tailwind CSS v4 setup and the Instrument Serif
   typography.
 

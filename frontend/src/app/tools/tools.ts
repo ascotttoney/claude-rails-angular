@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { ImageError, toThumbnailDataUrl } from '../image';
 import { Tool, TOOL_CATEGORIES, emptyTool } from '../tool';
 import { ToolService } from '../tool.service';
 
@@ -19,6 +20,10 @@ export class Tools implements OnInit {
   protected readonly editingId = signal<number | null>(null);
   protected readonly errors = signal<string[]>([]);
   protected readonly loading = signal(true);
+  /** True while a chosen photo is being downscaled. */
+  protected readonly processingImage = signal(false);
+  /** Tool whose photo is open in the lightbox, if any. */
+  protected readonly viewing = signal<Tool | null>(null);
 
   ngOnInit(): void {
     this.load();
@@ -73,6 +78,9 @@ export class Tools implements OnInit {
         if (this.editingId() === tool.id) {
           this.resetForm();
         }
+        if (this.viewing()?.id === tool.id) {
+          this.closeImage();
+        }
         this.load();
       },
       error: () => this.errors.set(['Could not delete the tool.'])
@@ -81,6 +89,43 @@ export class Tools implements OnInit {
 
   protected cancelEdit(): void {
     this.resetForm();
+  }
+
+  /** Downscales the chosen photo and attaches it to the form. */
+  protected pickImage(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+    this.processingImage.set(true);
+    toThumbnailDataUrl(file)
+      .then((image) => {
+        this.form.set({ ...this.form(), image });
+        this.errors.set([]);
+      })
+      .catch((err) => {
+        this.errors.set([err instanceof ImageError ? err.message : 'Could not add that photo.']);
+      })
+      .finally(() => {
+        this.processingImage.set(false);
+        input.value = '';
+      });
+  }
+
+  /** Drops the photo from the form; saving then clears it on the tool. */
+  protected clearImage(): void {
+    this.form.set({ ...this.form(), image: null });
+  }
+
+  protected viewImage(tool: Tool): void {
+    this.viewing.set(tool);
+  }
+
+  /** Escape closes the lightbox, which is not itself focused. */
+  @HostListener('document:keydown.escape')
+  protected closeImage(): void {
+    this.viewing.set(null);
   }
 
   /** Downloads the whole inventory as a JSON file. */
